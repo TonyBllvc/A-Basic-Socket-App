@@ -27,7 +27,6 @@ const ProfileModel = ({ user, open, close }) => {
             <Button colorScheme='blue' mr={3} onClick={close}>
               Close
             </Button>
-            <Button variant='ghost' > Secondary Action </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

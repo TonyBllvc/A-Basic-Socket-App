@@ -4,10 +4,11 @@ import { Box, Text, useDisclosure } from '@chakra-ui/react'
 import { FaArrowLeft, FaEye } from 'react-icons/fa'
 import { getSender, getSenderFull } from '../config/chatLogics'
 import ProfileModel from './mics/ProfileModel'
+import UpdateGroupChatModel from './mics/UpdateGroupChatModel'
 
 // ***************************** Chat Interface ******************
 const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure()
     // const { user, selectedChat, setSelectedChat } = ChatState()
 
     return (
@@ -23,13 +24,13 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
                             {!selectedChat.isGroupChat ? (
                                 <>
                                     {getSender(user, selectedChat.users)}
-                                    <FaEye type='button' className=' text-red-600 text-lg m-1 font-thin'  onClick={onOpen} />
+                                    <FaEye type='button' className=' text-red-600 text-lg m-1 font-thin' onClick={onOpen} />
                                     <ProfileModel open={isOpen} close={onClose} user={getSenderFull(user, selectedChat.users)} />
                                 </>
                             ) : (
                                 <>
                                     {selectedChat.chat_name.toUpperCase()}
-
+                                    <UpdateGroupChatModel setSelectedChat={setSelectedChat} selectedChat={selectedChat} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} user={user} />
                                 </>
                             )}
                             {/* //********************Ends here *******************  */}

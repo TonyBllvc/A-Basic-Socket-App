@@ -10,7 +10,7 @@ const GroupChatsModel = ({ user, setChats, chats, open, close }) => {
   const [search, setSearch] = useState('')
   const [searchResult, setSearchResult] = useState([])
   const [loading, setLoading] = useState(false)
-  
+
 
   const toast = useToast()
 
@@ -85,7 +85,7 @@ const GroupChatsModel = ({ user, setChats, chats, open, close }) => {
       //     },
 
       // })
-      
+
       // const json = await data.json()
 
       // setChats([json, ...chats])
@@ -97,8 +97,8 @@ const GroupChatsModel = ({ user, setChats, chats, open, close }) => {
       }
 
       const { data } = await axios.post('/api/chat/group', {
-        name: groupChatName, users: JSON.stringify(selectedUsers.map((u) => u._id ))
-      }, config 
+        name: groupChatName, users: JSON.stringify(selectedUsers.map((u) => u._id))
+      }, config
       )
 
       setChats([data, ...chats])
@@ -119,7 +119,7 @@ const GroupChatsModel = ({ user, setChats, chats, open, close }) => {
         isClosable: true,
         position: "top",
       })
-      
+
     }
   }
   const handleDelete = (delUser) => {
@@ -182,13 +182,12 @@ const GroupChatsModel = ({ user, setChats, chats, open, close }) => {
             )
             }
 
-          </ModalBody> 
+          </ModalBody>
 
           <ModalFooter>
             <Button colorScheme='blue' onClick={handleSubmit}>
               Create Chat
             </Button>
-            <Button variant='ghost' > Secondary Action </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

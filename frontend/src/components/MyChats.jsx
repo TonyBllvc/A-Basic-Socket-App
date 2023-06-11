@@ -10,7 +10,7 @@ import GroupChatsModel from './mics/GroupChatsModel'
 
 // ********************* Chat interface *******************  
 const MyChats = ({ fetchAgain }) => {
-
+''
   const [loggedUser, setLoggedUser] = useState('')
   const { user, selectedChat, setSelectedChat, chats, setChats } = ChatState()
   // ****************************

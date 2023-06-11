@@ -73,6 +73,7 @@ const ChatNav = () => {
         position: "top",
       })
       console.log(error.message)
+      setLoading(false)
     }
   }
 
