@@ -3,23 +3,23 @@ const connectDB = require('./config/db')
 require('dotenv').config()
 const userRoutes = require('./routes/user')
 const chatRoutes = require('./routes/chats')
+const messageRoutes = require('./routes/messages')
 const { notFound, errorHandler } = require('./middleware/errorHandle')
 
 const app = express()
 
 connectDB() 
 
-// ***************************
 app.use(express.json())
-// ************************
 
 app.get('/', (req, res) => {
   res.send('API is running')
 })
-// **********************************
 
 app.use('/api/user', userRoutes )
 app.use('/api/chat', chatRoutes )
+// **********************************
+app.use('/api/message', messageRoutes )
 // *******************************
 
 app.use(notFound)
