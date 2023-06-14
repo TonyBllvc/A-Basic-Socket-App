@@ -26,6 +26,7 @@ const accessChat = async (req, res) => {
     isChat = await User.populate(isChat, {
         path: 'latestMessage.sender',
         // add 'picture' here later
+        // ******************** go back here ******************
         select: 'name, email',
     })
 

@@ -3,7 +3,9 @@ const connectDB = require('./config/db')
 require('dotenv').config()
 const userRoutes = require('./routes/user')
 const chatRoutes = require('./routes/chats')
+// ************* send message api ***********************
 const messageRoutes = require('./routes/messages')
+// *******************************************************
 const { notFound, errorHandler } = require('./middleware/errorHandle')
 
 const app = express()
