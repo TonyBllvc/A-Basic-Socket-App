@@ -1,5 +1,6 @@
 const express = require('express')
 const connectDB = require('./config/db')
+// const cors =require('cors')
 require('dotenv').config()
 const userRoutes = require('./routes/user')
 const chatRoutes = require('./routes/chats')
@@ -11,7 +12,7 @@ const { notFound, errorHandler } = require('./middleware/errorHandle')
 const app = express()
 
 connectDB() 
-
+// app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {

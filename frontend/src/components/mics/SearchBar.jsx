@@ -1,4 +1,4 @@
-import { Box, Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, Input, Spinner, Toast, useDisclosure } from '@chakra-ui/react'
+import { Box, Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, Input, Spinner, useToast, useDisclosure } from '@chakra-ui/react'
 import React from 'react'
 import { FaTimes } from 'react-icons/fa'
 import axios from 'axios'
@@ -9,6 +9,7 @@ import { ChatState } from '../../contexts/ChatProvider'
 const SearchBar = ({ toggle, set, search, setSearch, handleSearch, loading, searchResult, setLoadingChat, loadingChat, setSelectedChat }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { user, chats, setChats } = ChatState()
+    const toast = useToast()
 
     const accessChat = async (userId) => {
         // preventDefault()
@@ -49,7 +50,7 @@ const SearchBar = ({ toggle, set, search, setSearch, handleSearch, loading, sear
             setLoadingChat(false)
             set(!toggle)
         } catch (error) {
-            Toast({
+            toast({
                 title: 'Error fetching the chat!',
                 description: error.message,
                 status: 'error',

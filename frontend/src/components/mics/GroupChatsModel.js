@@ -41,7 +41,7 @@ const GroupChatsModel = ({ user, setChats, chats, open, close }) => {
         )
         const json = await data.json()
 
-        console.log(json)
+        // console.log(json)
         setLoading(false)
         setSearchResult(json)
       } catch (error) {
