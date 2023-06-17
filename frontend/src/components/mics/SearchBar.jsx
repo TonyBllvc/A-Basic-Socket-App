@@ -1,7 +1,7 @@
 import { Box, Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, Input, Spinner, useToast, useDisclosure } from '@chakra-ui/react'
 import React from 'react'
 import { FaTimes } from 'react-icons/fa'
-import axios from 'axios'
+// import axios from 'axios'
 import ChatLoading from './ChatLoading'
 import UserListItem from '../UserAvata/UserListItem'
 import { ChatState } from '../../contexts/ChatProvider'

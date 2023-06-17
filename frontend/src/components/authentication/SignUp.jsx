@@ -58,18 +58,33 @@ const SignUp = () => {
                 }
 
             })
-            toast({
-               title: 'Registration Successful!',
-               status: 'success',
-               duration: 3000,
-               isClosable: true,
-               position: "top",
-            })
-
             const json = await res.json()
-            localStorage.setItem('userInfo', json)
-            setLoading(false)
-            navigate('/chats')
+
+            if(!res.ok){
+                toast({
+                    title: 'Response not okay!',
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: true,
+                    position: "top",
+                })
+                console.log(json.error)
+
+            }
+
+            if(res.ok){
+                toast({
+                    title: 'Login Successful!',
+                    description: email + ' logged in successfully',
+                    status: 'success',
+                    duration: 3000,
+                    isClosable: true,
+                    position: "top",
+                })
+                localStorage.setItem('userInfo', JSON.stringify(json))
+                setLoading(false)
+                navigate('/chats')
+            }
         } catch (error) {
             toast({
                title: 'An Error Occurred!',
@@ -167,7 +182,7 @@ const SignUp = () => {
                 </FormLabel>
                 <InputGroup>
 
-                    <Input type={show ? 'text' : 'password'} bg='green.100' placeholder='Confirm your password' value={name} onChange={(e) => setConfirmPassword(e.target.value)} />
+                    <Input type={show ? 'text' : 'password'} bg='green.100' placeholder='Confirm your password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                     <InputRightElement width='4.5rem'>
                         <Button h='1.75rem' size='sm' onClick={handleShowHide}>
                             {show ? 'Hide' : 'Show'}

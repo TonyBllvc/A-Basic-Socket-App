@@ -5,7 +5,9 @@ import UserBadgeItem from '../UserAvata/UserBadgeItem'
 import axios from 'axios'
 import UserListItem from '../UserAvata/UserListItem'
 
-const UpdateGroupChatModel = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain }) => {
+//**************************** fetchMessages was picked up from drill ********************* */
+const UpdateGroupChatModel = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain, fetchMessages }) => {
+  // *******************************************************
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [groupChatName, setGroupChatName] = useState('')
   const [search, setSearch] = useState('')
@@ -47,6 +49,9 @@ const UpdateGroupChatModel = ({ user, selectedChat, setSelectedChat, fetchAgain,
       // return empty chat
       user1._id === user._id ? setSelectedChat('') : setSelectedChat(data)
       setFetchAgain(!fetchAgain)
+      // ************** prop passed  ******************
+      fetchMessages()
+      // ***********************************************
       setLoading(false)
 
     } catch (error) {

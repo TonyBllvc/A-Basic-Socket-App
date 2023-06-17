@@ -49,7 +49,7 @@ const Login = () => {
 
             if(!res.ok){
                 toast({
-                    title: 'An Error Occurred!',
+                    title: 'Response not okay!',
                     status: 'error',
                     duration: 5000,
                     isClosable: true,
@@ -74,7 +74,7 @@ const Login = () => {
             }
         } catch (error) {
             toast({
-                title: 'An Error Occurred!',
+                title: 'Error occurred, can not login now!',
                 status: 'error',
                 duration: 5000,
                 isClosable: true,
