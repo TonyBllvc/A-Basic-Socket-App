@@ -7,6 +7,12 @@ import ProfileModel from './mics/ProfileModel'
 import axios from 'axios'
 import UpdateGroupChatModel from './mics/UpdateGroupChatModel'
 import ScrollableChat from './ScrollableChat'
+// ******************************Socket IO ****************
+import io from 'socket.io-client'
+// ****************************************************
+
+const ENDPOINT = 'http://localhost:5000';
+var socket, selectedChatCompare;
 
 const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -15,6 +21,8 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
     const [messages, setMessages] = useState([])
     const [loading, setLoading] = useState(false)
     const [newMessage, setNewMessage] = useState('')
+    const [socketConnected, setSocketConnected] = useState(false)
+
     const toast = useToast()
 
     const fetchMessages = async () => {
@@ -34,9 +42,11 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
                 `/api/message/${selectedChat._id}`,
                 config
             )
-            console.log(messages)
+
             setMessages(data)
             setLoading(false)
+
+            socket.emit("Join chat", selectedChat._id)
         } catch (error) {
             toast({
                 title: 'Error Occurred!',
@@ -51,7 +61,19 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
 
     useEffect(() => {
         fetchMessages()
+
+        selectedChatCompare = selectedChat
     }, [selectedChat])
+
+    useEffect(() => {
+        socket.on("message received", (newMessageReceived) => {
+            if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
+                // give notification
+            }else{
+                setMessages(...messages, newMessageReceived)
+            }
+        })
+    })
 
     const sendMessage = async (event) => {
         // If Enter is clicked, and there is a message in the box
@@ -87,6 +109,17 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
             }
         }
     }
+
+    // ******************************Socket IO ***************
+    useEffect(() => {
+        socket = io(ENDPOINT)
+        socket.emit("setup", user)
+        socket.on("connection", () => {
+            setSocketConnected(true)
+        })
+    }, [])
+    // *****************************************************************
+
     const clickMessage = async (event) => {
         // If Enter is clicked, and there is a message in the box
 
@@ -159,7 +192,7 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
                             ) : (
                                 <div className='flex flex-col overflow-y-scroll  ' >
 
-                                    <ScrollableChat messages={messages} />
+                                    <ScrollableChat user={user} messages={messages} />
                                 </div>
                             )
                             }
