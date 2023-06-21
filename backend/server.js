@@ -42,39 +42,41 @@ const io = require('socket.io')(server, {
   pingTimeout: 60000,
   cors: {
     origin: 'http://localhost:3000'
-  }
+  } 
 })
 
-io.on('connection', (socket) => {
+io.on("connection", (socket) => {
   console.log("Connection made")
 
   // User should be connected to personal socket
   socket.on("setup", (userData) => {
     // creates new room for client with use id
     socket.join(userData._id)
-    console.log(userData._id)
+    // console.log(userData._id)
     // to pass connection updates
     socket.emit("connected")
   })
   // for joining chats 
-  socket.on("join chat", (room) => {
+  socket.on("join_chat", (room) => {
     socket.join(room)
-    console.log("User Joined Room: ", room)
+    console.log("User Joined Room: " + room)
   })
 
-  socket.on("send message", (newMessageReceived) => {
+  socket.on("new_message", (newMessageReceived) => {
+    // which chat it belongs to, parse in a var
     var chat = newMessageReceived.chat
 
-    if( !chat.users){
+    // if no user exists
+    if(!chat.users){    
       return console.log('Chat user not defined')
     }
 
-    ChatState.users.forEach(user => {
-      if(user._id == newMessageReceived.sender._id){
+    chat.users.forEach((user) => {
+      if(user._id === newMessageReceived.sender._id){
         return
       }
 
-      socket.in(user._id).emit("messages received", newMessageReceived)
+      socket.in(user._id).emit("message_received", newMessageReceived)
     })
   })
 

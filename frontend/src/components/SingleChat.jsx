@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ChatState } from '../contexts/ChatProvider'
+// import { ChatState } from '../contexts/ChatProvider'
 import { Box, Button, FormControl, Input, Spinner, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import { FaArrowLeft, FaEnvelope, FaEye } from 'react-icons/fa'
 import { getSender, getSenderFull } from '../config/chatLogics'
@@ -9,10 +9,10 @@ import UpdateGroupChatModel from './mics/UpdateGroupChatModel'
 import ScrollableChat from './ScrollableChat'
 // ******************************Socket IO ****************
 import io from 'socket.io-client'
-// ****************************************************
 
 const ENDPOINT = 'http://localhost:5000';
 var socket, selectedChatCompare;
+// ****************************************************
 
 const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -24,6 +24,16 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
     const [socketConnected, setSocketConnected] = useState(false)
 
     const toast = useToast()
+    
+// ******************************Socket IO ****************
+    useEffect(() => {
+        socket = io(ENDPOINT)
+        socket.emit("setup", user)
+        socket.on("connection", () => {
+            setSocketConnected(true)
+        })
+    }, [])
+    // ****************************************************************
 
     const fetchMessages = async () => {
         if (!selectedChat) {
@@ -46,7 +56,9 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
             setMessages(data)
             setLoading(false)
 
-            socket.emit("Join chat", selectedChat._id)
+            // ******************************Socket IO ***************
+            socket.emit("join_chat", selectedChat._id)
+            // ****************************************************
         } catch (error) {
             toast({
                 title: 'Error Occurred!',
@@ -62,18 +74,12 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
     useEffect(() => {
         fetchMessages()
 
+        // ******************************Socket IO ***************
+        // a sort of backup for the selectedChat
         selectedChatCompare = selectedChat
+        // *********************************************************
     }, [selectedChat])
 
-    useEffect(() => {
-        socket.on("message received", (newMessageReceived) => {
-            if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
-                // give notification
-            }else{
-                setMessages(...messages, newMessageReceived)
-            }
-        })
-    })
 
     const sendMessage = async (event) => {
         // If Enter is clicked, and there is a message in the box
@@ -95,6 +101,9 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
                     }, config
                 )
 
+                console.log(data)
+
+                socket.emit("new_message", data)
                 setMessages([...messages, data])
             } catch (error) {
                 toast({
@@ -111,13 +120,16 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
     }
 
     // ******************************Socket IO ***************
+
     useEffect(() => {
-        socket = io(ENDPOINT)
-        socket.emit("setup", user)
-        socket.on("connection", () => {
-            setSocketConnected(true)
+        socket.on("message_received", (newMessageReceived) => {
+            if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
+                // give notification
+            } else {
+                setMessages(...messages, newMessageReceived)
+            }
         })
-    }, [])
+    })
     // *****************************************************************
 
     const clickMessage = async (event) => {
@@ -160,6 +172,7 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
 
         //Typing Indicator Logic
     }
+
     // *********************************************************
 
     return (
