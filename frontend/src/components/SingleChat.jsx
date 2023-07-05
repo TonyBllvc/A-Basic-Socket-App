@@ -103,7 +103,7 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
 
                 console.log(data)
 
-                socket.emit("new_message", data)
+                socket.emit("new_message", data.content)
                 setMessages([...messages, data])
             } catch (error) {
                 toast({

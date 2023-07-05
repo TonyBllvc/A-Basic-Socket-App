@@ -64,20 +64,21 @@ io.on("connection", (socket) => {
 
   socket.on("new_message", (newMessageReceived) => {
     // which chat it belongs to, parse in a var
-    var chat = newMessageReceived.chat
+    var chat = newMessageReceived
 
     // if no user exists
-    if(!chat.users){    
+    if(!chat){    
       return console.log('Chat user not defined')
     }
 
-    chat.users.forEach((user) => {
-      if(user._id === newMessageReceived.sender._id){
-        return
-      }
+    console.log('success pass')
+    // chat.users.forEach((user) => {
+    //   if(user._id === newMessageReceived.sender._id){
+    //     return
+    //   }
 
-      socket.in(user._id).emit("message_received", newMessageReceived)
-    })
+    //   socket.in(user._id).emit("message_received", newMessageReceived)
+    // })
   })
 
 })

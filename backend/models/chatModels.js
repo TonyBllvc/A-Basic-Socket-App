@@ -9,7 +9,7 @@ const chatSchema = new Schema({
         trim: true
     },
     // if the chat is a group chat or not
-    isGroupChat: {
+    isGroupChat: { 
         type: Boolean,
         default: false
     },
