@@ -66,7 +66,9 @@ const fetchChats = async (req, res) => {
 
 
         // Chat.find({users: {$elemMatch: { $eq: req.user._id}}}).then((result) => res.send(result)) // to pass data 
-        Chat.find({ users: { $elemMatch: { $eq: req.user._id } } }).populate("users", "-password").populate("groupAdmin", "-password").populate("latestMessage").sort({ updatedAt: -1 }).then(async (results) => {
+        Chat.find({ 
+            users: { $elemMatch: { $eq: req.user._id } 
+        } }).populate("users", "-password").populate("groupAdmin", "-password").populate("latestMessage").sort({ updatedAt: -1 }).then(async (results) => {
             results = await User.populate(results, {
                 path: 'latestMessage.sender',
                 // add 'picture' here later
@@ -88,7 +90,8 @@ const createGroupChat = async (req, res) => {
         return res.status(400).send({ message: "Please fill all the fields" })
     }
 
-    // parse user details as "users"
+    // parse user details as "users"(because this is an array)..
+    // .. we parse
     var users = JSON.parse(req.body.users)
 
     // ensure that it is 2 or more users before proceeding
@@ -96,7 +99,7 @@ const createGroupChat = async (req, res) => {
         return res.status(400).send("More than 2 users are required to form a group chat")
     }
 
-    // now parse this user details after check
+    // now parse this curent user's details after check
     users.push(req.user)
 
     try {

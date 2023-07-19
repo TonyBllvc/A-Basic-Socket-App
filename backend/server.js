@@ -13,7 +13,18 @@ const { notFound, errorHandler } = require('./middleware/errorHandle')
 const app = express()
 
 connectDB()
-// app.use(cors())
+
+
+// const corsOptions = {
+//   origin: 'http://localhost:3000',
+//   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+//   // allowedHeaders: [
+//   //   'Content-Type', ''
+//   // ]
+// }
+
+// app.use(cors(corsOptions))
+
 app.use(express.json())
 
 app.get('/', (req, res) => {
@@ -24,7 +35,7 @@ app.use((req, res, next) => {
   console.log(req.path, req.method)
   next()
 })
-
+ 
 app.use('/api/user', userRoutes)
 app.use('/api/chat', chatRoutes)
 // **********************************
@@ -41,8 +52,9 @@ const io = require('socket.io')(server, {
   // to save bandwidth
   pingTimeout: 60000,
   cors: {
-    origin: 'http://localhost:3000'
-  } 
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+  }
 })
 
 io.on("connection", (socket) => {
@@ -63,22 +75,27 @@ io.on("connection", (socket) => {
   })
 
   socket.on("new_message", (newMessageReceived) => {
+
     // which chat it belongs to, parse in a var
-    var chat = newMessageReceived
+    var chat = newMessageReceived.chat_owner
 
     // if no user exists
-    if(!chat){    
+    if (!chat.users) {
       return console.log('Chat user not defined')
     }
 
     console.log('success pass')
-    // chat.users.forEach((user) => {
-    //   if(user._id === newMessageReceived.sender._id){
-    //     return
-    //   }
 
-    //   socket.in(user._id).emit("message_received", newMessageReceived)
-    // })
+    // pass to all other users but me
+    chat.users.forEach((user) => {
+      // if chat of owner is the same as that of sender, return 
+      if (user._id == newMessageReceived.sender._id) {
+        return
+      }
+
+      socket.in(user._id).emit("message_received", newMessageReceived)
+    })
+
   })
 
 })
