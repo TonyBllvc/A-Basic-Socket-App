@@ -35,7 +35,7 @@ app.use((req, res, next) => {
   console.log(req.path, req.method)
   next()
 })
- 
+
 app.use('/api/user', userRoutes)
 app.use('/api/chat', chatRoutes)
 // **********************************
@@ -74,6 +74,14 @@ io.on("connection", (socket) => {
     console.log("User Joined Room: " + room)
   })
 
+  socket.on("typing", (room) =>
+    socket.in(room).emit("typing")
+  )
+
+  socket.on("stop_typing", (room) =>
+    socket.in(room).emit("stop_typing")
+  )
+  
   socket.on("new_message", (newMessageReceived) => {
 
     // which chat it belongs to, parse in a var
@@ -88,14 +96,20 @@ io.on("connection", (socket) => {
 
     // pass to all other users but me
     chat.users.forEach((user) => {
-      // if chat of owner is the same as that of sender, return 
-      if (user._id == newMessageReceived.sender._id) {
-        return
+      // if chat of owner is the same as that  of sender, return 
+      if (user._id === newMessageReceived.sender._id) {
+        return console.log('not success')
       }
 
       socket.in(user._id).emit("message_received", newMessageReceived)
+      console.log('success')
     })
 
+  })
+
+  socket.off("setup", (userData) => {
+    console.log(" USER DISCONNECTED")
+    socket.leave(userData._id)
   })
 
 })

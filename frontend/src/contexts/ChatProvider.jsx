@@ -6,6 +6,7 @@ export const ChatContextProvider = ({ children }) => {
   const [user, setUser] = useState('')
   const [ selectedChat, setSelectedChat ] = useState('')
   const [ chats, setChats ] = useState([])
+  const [ notification, setNotification ] = useState([])
   // made use of useNavigation, but can not function
   // because it does not work inside a useContext 
 
@@ -19,7 +20,7 @@ export const ChatContextProvider = ({ children }) => {
     // }
   }, [])
   return (
-    <ChatContext.Provider value={{ user, setUser, selectedChat, setSelectedChat, chats, setChats  }}>
+    <ChatContext.Provider value={{ user, setUser, selectedChat, setSelectedChat, chats, setChats, notification, setNotification  }}>
       {children}
     </ChatContext.Provider>
 

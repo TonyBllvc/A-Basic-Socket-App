@@ -55,7 +55,8 @@ const Login = () => {
                     isClosable: true,
                     position: "top",
                 })
-                console.log(json.error)
+                console.log(json.error) 
+                setLoading(false)
 
             }
 
