@@ -10,9 +10,9 @@ import GroupChatsModel from './mics/GroupChatsModel'
 
 // ********************* Chat interface *******************  
 const MyChats = ({ fetchAgain }) => {
-''
+  ''
   const [loggedUser, setLoggedUser] = useState('')
-  const { user, selectedChat, setSelectedChat, chats, setChats } = ChatState()
+  const { user, selectedChat, setSelectedChat, chats, setChats, notification, setNotification } = ChatState()
   // ****************************
   const { isOpen, onOpen, onClose } = useDisclosure()
   // ****************************** 
@@ -78,10 +78,19 @@ const MyChats = ({ fetchAgain }) => {
                 <Text>
 
                   {/* If chat is not a group chat */}
-                  {!chat.isGroupChat ?
-                    getSender(loggedUser, chat.users)
-                    :
-                    chat.chat_name
+                  {!chat.isGroupChat ? (
+                    <div onClick={
+                      setNotification(notification.filter((n) => n !== notification._id))
+                    }>
+                      {getSender(loggedUser, chat.users)}
+                    </div>
+                  ) : (
+                    <div onClick={
+                      setNotification(notification.filter((n) => n !== notification._id))
+                    }>
+                      {chat.chat_name}
+                    </div>
+                  )
                   }
                 </Text>
               </Box>

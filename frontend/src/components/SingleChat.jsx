@@ -8,8 +8,9 @@ import axios from 'axios'
 import UpdateGroupChatModel from './mics/UpdateGroupChatModel'
 import ScrollableChat from './ScrollableChat'
 import animationData from "../animations/typing.json"
+import Lottie from "lottie-react"
+// import { } from "@lottiefiles/react-lottie-player"
 
-// import Lottie from "react-lottie" 
 // ******************************Socket IO ****************
 import io from 'socket.io-client'
 
@@ -17,7 +18,7 @@ const ENDPOINT = 'http://localhost:5000';
 var socket, selectedChatCompare;
 // ****************************************************
 
-const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain, notification, setNotification  }) => {
+const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain, notification, setNotification }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     // const { user, selectedChat, setSelectedChat } = ChatState()
     // ****************************Single message ***************
@@ -25,8 +26,8 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
     const [loading, setLoading] = useState(false)
     const [newMessage, setNewMessage] = useState('')
     const [socketConnected, setSocketConnected] = useState(false)
-    const [ typing, setTyping ] =  useState(false)
-    const [ isTyping, setIsTyping ] =  useState(false)
+    const [typing, setTyping] = useState(false)
+    const [isTyping, setIsTyping] = useState(false)
 
     const defaultOptions = {
         loop: true,
@@ -47,10 +48,10 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
         })
         socket.on("typing", () => {
             setIsTyping(true)
-        } )
+        })
         socket.on("stop_typing", () => {
             setIsTyping(false)
-        } )
+        })
     }, [])
     // ****************************************************************
 
@@ -99,7 +100,7 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
         // *********************************************************
     }, [selectedChat])
 
-    console.log(notification, "---------")
+    // console.log(notification, "---------")
     // ******************************Socket IO ***************
 
     useEffect(() => {
@@ -108,12 +109,12 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
             // same as message being recieved fronm server
             if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat_owner._id) {
                 // give notification
-                if( !notification.includes( newMessageReceived )) {
-                    setNotification([ newMessageReceived, ...notification ])
+                if (!notification.includes(newMessageReceived)) {
+                    setNotification([newMessageReceived, ...notification])
                     setFetchAgain(!fetchAgain)
                 }
             } else {
-                setMessages([ ...messages, newMessageReceived ])
+                setMessages([...messages, newMessageReceived])
             }
         })
     })
@@ -201,13 +202,13 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
         setNewMessage(e.target.value)
 
         //Typing Indicator Logic
-        if(!socketConnected){
-            return 
+        if (!socketConnected) {
+            return
         }
 
         // if user is typing, pass true
-        if(!typing){
-            setTyping(true)  
+        if (!typing) {
+            setTyping(true)
             // for the particular chat
             socket.emit("typing", selectedChat._id);
         }
@@ -221,7 +222,7 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
             var timeNow = new Date().getTime()
             var timeDiff = timeNow - lastTypingTime
 
-            if(timeDiff >= timeLength && typing ){
+            if (timeDiff >= timeLength && typing) {
                 socket.emit("stop_typing", selectedChat._id)
                 setTyping(false)
             }
@@ -254,7 +255,7 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
                                 </>
                             )}
                         </Text>
-                        <Box display='flex' flexDirection='column' justifyContent='flex-end' p={3} bg='#e8e8e8' w='100%' h='100%' borderRadius='lg' overflowY='hidden' >
+                        <Box display='flex' flexDirection='column' justifyContent='flex-end' p={3} bg='#e8e8e8' -u origin main >
                             {loading ? (
                                 <Spinner size='xl' w={20} h={20} alignSelf='center' margin='auto' />
                             ) : (
@@ -269,18 +270,21 @@ const SingleChat = ({ user, selectedChat, setSelectedChat, fetchAgain, setFetchA
                             {/* //*****************UI Starts here**********************  */}
                             <Box display='flex' flexDirection='row' justifyContent='space-around' alignItems='center' alignContent='center' p={3} bg='#e8e8e8' w='100%' >
                                 <FormControl onKeyDown={sendMessage} mr={1} isRequired mt={3} >
-                                { isTyping ? (
-                                    <div>
-                                        Typing...
-                                        {/* <Lottie 
-                                        options={ defaultOptions }
-                                            width={70}
-                                            style={{ marginButtom: 15, marginLeft: 0}}
-                                        /> */}
-                                    </div>
-                                ) : (
-                                    <> </>
-                                )}
+                                    {isTyping ? (
+                                        <div>
+                                            Typing...
+                                            {/* <Lottie
+                                                loop
+                                                autoPlay
+                                                animationData={animationData}
+                                                // options={ defaultOptions }
+                                                width='10px'
+                                                style={{ marginButtom: 15, fontSize: '15px', marginLeft: 0 }}
+                                            /> */}
+                                        </div>
+                                    ) : (
+                                        <> </>
+                                    )}
                                     <Input variant='filled' bg='gray.300' placeholder='Enter a message' onChange={typingHandler} value={newMessage} />
                                 </FormControl>
                                 <Button onClick={clickMessage} colorScheme='green' p={2} mt={3} ml={2} >

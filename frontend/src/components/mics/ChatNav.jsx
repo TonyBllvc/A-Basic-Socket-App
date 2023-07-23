@@ -5,6 +5,7 @@ import { ChatState } from '../../contexts/ChatProvider'
 import ProfileModel from './ProfileModel'
 import { useNavigate } from 'react-router-dom'
 import SearchBar from './SearchBar'
+import { getSender } from '../../config/chatLogics'
 
 const ChatNav = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -17,7 +18,7 @@ const ChatNav = () => {
   const [toggle, setToggle] = useState(false)
   const toast = useToast()
 
-  const { user, setSelectedChat } = ChatState()
+  const { user, setSelectedChat, notification, setNotification } = ChatState()
 
   const logoutHandler = () => {
     localStorage.removeItem('userInfo')
@@ -56,10 +57,11 @@ const ChatNav = () => {
 
       const data = await fetch(`/api/user?search=${search}`, {
         headers: {
-        Authorization: `Bearer ${user.token}`,
-      }}
+          Authorization: `Bearer ${user.token}`,
+        }
+      }
       )
-       const json = await data.json()
+      const json = await data.json()
 
       setLoading(false)
       setSearchResult(json)
@@ -77,7 +79,7 @@ const ChatNav = () => {
     }
   }
 
-  return (  
+  return (
     <div>
       <Box display='flex' justifyContent='space-between' alignItems='center' bg='white' w='100%' p='5px 10px 5px 10px' borderWidth='5px' >
         <Tooltip label="Search Users to chat" hasArrow placement='bottom-end'>
@@ -93,11 +95,40 @@ const ChatNav = () => {
 
         <div className=' flex align-middle justify-center'>
           <Menu>
-            <MenuButton p={1}>
-              <FaBell type='button' className=' text-red-600 text-lg m-1 font-thin' />
-              {/* <BellIcon */}
+            <MenuButton p={1} display='flex' justifyContent='center'>
+              <div className='flex flex-row'>
+                {/* <BellIcon */}
+                {notification.length >= 1 ? (
+
+                  <div className='flex flex-row justify-center items-center'>
+                    <FaBell type='button' className=' text-black text-lg font-thin -mr-2.5' />
+                    <div className='text-sm -mt-5 text-white rounded-xl px-1 bg-red-700 font-semibold'>
+                      {notification.length}
+                    </div>
+                  </div>
+
+                ) : (
+                  <div className='mr-4'>
+                  <FaBell type='button' className=' text-black text-lg m-1 font-thin -mr-3' />
+                  </div>
+                )
+                }
+              </div>
             </MenuButton>
-            {/* <MenuList> </MenuList> */}
+            <MenuList pl={2}>
+              {!notification.length && 'No new messages '}
+              {notification.map(notify => (
+                <MenuItem key={notify._id} onClick={() => {
+                  setSelectedChat(notify.chat_owner)
+                  setNotification(notification.filter((n) => n !== notify))
+                }}>
+                  {notify.chat_owner.isGroupChat ?
+                    `New message in ${notify.chat_owner.chat_name}`
+                    :
+                    `New Message from ${getSender(user, notify.chat_owner.users)}`}
+                </MenuItem>
+              ))}
+            </MenuList>
           </Menu>
 
           <Menu>

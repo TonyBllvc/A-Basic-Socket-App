@@ -9,7 +9,7 @@ const messageSchema = mongoose.Schema({
         type: Schema.Types.ObjectId,
         // reference to our message model
         ref: "user"
-    },
+    }, 
     //  content of message
     content: {
         type: String,
